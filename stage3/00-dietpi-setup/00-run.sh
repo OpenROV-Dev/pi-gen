@@ -1,16 +1,32 @@
-#!/bin/bash -ex
+#!/bin/bash -x
+
+# Clone the DietPi repo
+git clone https://github.com/Fourdee/DietPi.git ./files/DietPi --depth 1
+
+# Delete unnecessary files
+rm ./files/DietPi/boot_c1.ini
+rm ./files/DietPi/boot_c2.ini
+rm ./files/DietPi/boot_xu4.ini
+rm -r ./files/DietPi/.git
+rm ./files/DietPi/.gitattributes
+rm ./files/DietPi/.gitignore
+rm ./files/DietPi/TESTING-BRANCH.md
+
+# Change permissions on all of the files
+# TODO: Sort out actual correct permissions, as opposed to a blind recursive 777
+chmod -R 777 ./files/DietPi/*
 
 # Copy the DietPi files to root
-rsync -a files/DietPi ${ROOTFS_DIR}/
+rsync -a files/DietPi/* ${ROOTFS_DIR}/boot/
 
 # Install the debian keyrings
 on_chroot sh -e - << OROV_EOF
-	apt-key update
 	apt-get update
 	
-	apt-get install debian-keyring -y --force-yes
 	apt-key update
+	apt-get install debian-keyring -y --force-yes
 	apt-get install debian-archive-keyring -y --force-yes
+	apt-key update
 OROV_EOF
 
 # Add Non_RPI repos
@@ -25,10 +41,6 @@ _EOF_
 
 # Update and package list and remove unnecessary packages
 on_chroot sh -e - << OROV_EOF
-	# Update
-	apt-key update
-	apt-get update
-
 	# Remove following
 	DEBIAN_FRONTEND=noninteractive apt-get purge dhcpcd5 libsqlite* libxapian22 lua5.1 luajit netcat-* make makedev ncdu plymouth openresolv \
 	shared-mime-in* tcpd strace tasksel* wireless-* xdg-user-dirs triggerhappy python* v4l-utils traceroute xz-utils \
@@ -57,7 +69,7 @@ OROV_EOF
 echo -e "CONF_SWAPSIZE=0" > ${ROOTFS_DIR}/etc/dphys-swapfile
 
 #FSTAB
-cp ${ROOTFS_DIR}/DietPi/dietpi/conf/fstab ${ROOTFS_DIR}/etc/fstab
+cp ${ROOTFS_DIR}/boot/dietpi/conf/fstab ${ROOTFS_DIR}/etc/fstab
 
 # Create various folders that will be needed
 mkdir -p ${ROOTFS_DIR}/mnt/usb_1
@@ -66,20 +78,26 @@ mkdir -p ${ROOTFS_DIR}/mnt/ftp_client
 echo -e "Samba client can be installed and setup by DietPi-Config.\nSimply run: dietpi-config 8" > ${ROOTFS_DIR}/mnt/samba/readme.txt
 echo -e "FTP client mount can be installed and setup by DietPi-Config.\nSimply run: dietpi-config 8" > ${ROOTFS_DIR}/mnt/ftp_client/readme.txt
 
+on_chroot sh -e - << OROV_EOF
+	/boot/dietpi/dietpi-logclear 2
+OROV_EOF
+
+# Copy fstab file
+cp ${ROOTFS_DIR}/boot/dietpi/conf/fstab ${ROOTFS_DIR}/etc/fstab
+
 # Update dietpi-service
 on_chroot sh -e - << OROV_EOF
-	echo 1 > /DietPi/dietpi/.install_stage
-	cp /DietPi/dietpi/conf/dietpi-service /etc/init.d/dietpi-service
+	echo 1 > /boot/dietpi/.install_stage
+	cp /boot/dietpi/conf/dietpi-service /etc/init.d/dietpi-service
 	chmod +x /etc/init.d/dietpi-service
-
 	update-rc.d dietpi-service defaults 00 80
 	service dietpi-service start
 OROV_EOF
 
 # Copy cron jobs to correct directory
-cp ${ROOTFS_DIR}/DietPi/dietpi/conf/cron.daily_dietpi ${ROOTFS_DIR}/etc/cron.daily/dietpi
+cp ${ROOTFS_DIR}/boot/dietpi/conf/cron.daily_dietpi ${ROOTFS_DIR}/etc/cron.daily/dietpi
 chmod +x ${ROOTFS_DIR}/etc/cron.daily/dietpi
-cp ${ROOTFS_DIR}/DietPi/dietpi/conf/cron.hourly_dietpi ${ROOTFS_DIR}/etc/cron.hourly/dietpi
+cp ${ROOTFS_DIR}/boot/dietpi/conf/cron.hourly_dietpi ${ROOTFS_DIR}/etc/cron.hourly/dietpi
 chmod +x ${ROOTFS_DIR}/etc/cron.hourly/dietpi
 
 #Crontab
@@ -115,11 +133,11 @@ _EOF_
 echo -e "\n/DietPi/dietpi/login" >> ${ROOTFS_DIR}/root/.bashrc
 
 # Copy network configuration
-cp ${ROOTFS_DIR}/DietPi/dietpi/conf/network_interfaces ${ROOTFS_DIR}/etc/network/interfaces
+cp ${ROOTFS_DIR}/boot/dietpi/conf/network_interfaces ${ROOTFS_DIR}/etc/network/interfaces
 
 # Copy htop config
 mkdir -p ${ROOTFS_DIR}/root/.config/htop/
-cp ${ROOTFS_DIR}/DietPi/dietpi/conf/htoprc ${ROOTFS_DIR}/root/.config/htop/htoprc
+cp ${ROOTFS_DIR}/boot/dietpi/conf/htoprc ${ROOTFS_DIR}/root/.config/htop/htoprc
 
 # Set host and hostname info
 cat << _EOF_ > ${ROOTFS_DIR}/etc/hosts
@@ -132,7 +150,7 @@ DietPi
 _EOF_
 
 #hdparm
-cat << _EOF_ >> /etc/hdparm.conf
+cat << _EOF_ >> ${ROOTFS_DIR}/etc/hdparm.conf
 
 #DietPi external USB drive. Power management settings.
 /dev/sda {
@@ -228,7 +246,7 @@ on_chroot sh -e - << OROV_EOF
 	
 	# Enable service
 	systemctl enable rc-local.service
-	#systemctl daemon-reload
+	systemctl daemon-reload
 
 
 	#Create service to shutdown SSH/Dropbear before reboot
@@ -249,7 +267,7 @@ on_chroot sh -e - << OROV_EOF
 	
 	# Enable service
 	systemctl enable kill-ssh-user-sessions-before-network
-	#systemctl daemon-reload
+	systemctl daemon-reload
 
 	#echo "dpkg reconfig" 
 	#dpkg-reconfigure tzdata

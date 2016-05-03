@@ -78,7 +78,7 @@ mkdir -p ${ROOTFS_DIR}/mnt/ftp_client
 echo -e "Samba client can be installed and setup by DietPi-Config.\nSimply run: dietpi-config 8" > ${ROOTFS_DIR}/mnt/samba/readme.txt
 echo -e "FTP client mount can be installed and setup by DietPi-Config.\nSimply run: dietpi-config 8" > ${ROOTFS_DIR}/mnt/ftp_client/readme.txt
 
-on_chroot sh -e - << OROV_EOF
+on_chroot sh - << OROV_EOF
 	/boot/dietpi/dietpi-logclear 2
 OROV_EOF
 
@@ -86,7 +86,7 @@ OROV_EOF
 cp ${ROOTFS_DIR}/boot/dietpi/conf/fstab ${ROOTFS_DIR}/etc/fstab
 
 # Update dietpi-service
-on_chroot sh -e - << OROV_EOF
+on_chroot sh - << OROV_EOF
 	echo 1 > /boot/dietpi/.install_stage
 	cp /boot/dietpi/conf/dietpi-service /etc/init.d/dietpi-service
 	chmod +x /etc/init.d/dietpi-service
@@ -216,8 +216,10 @@ sed -i "/FORCE=/c\FORCE=force" ${ROOTFS_DIR}/etc/default/fake-hwclock
 echo -e "options 8192cu rtw_power_mgnt=0" > ${ROOTFS_DIR}/etc/modprobe.d/8192cu.conf
 echo -e "options 8188eu rtw_power_mgnt=0" > ${ROOTFS_DIR}/etc/modprobe.d/8188eu.conf
 
+echo "Final step"
+
 # Disable sysvinit services and enable systemd versions
-on_chroot sh -e - << OROV_EOF
+on_chroot sh -x - << OROV_END
 
 	# Disbale getty
 	systemctl disable getty@tty[2-6].service
@@ -227,44 +229,49 @@ on_chroot sh -e - << OROV_EOF
 
 	#Remove rc.local from /etc/init.d
 	update-rc.d -f rc.local remove
-        
-	# Create rc-local service
-	cat << _EOF_ > /etc/systemd/system/rc-local.service
-	[Unit]
-	Description=/etc/rc.local Compatibility
-	After=dietpi-service.service
+OROV_END
 
-	[Service]
-	Type=idle
-	ExecStart=/etc/rc.local
-	StandardOutput=tty
-	RemainAfterExit=yes
 
-	[Install]
-	WantedBy=multi-user.target
-	_EOF_
+# Create rc-local service
+cat << _EOF_ > ${ROOTFS_DIR}/etc/systemd/system/rc-local.service
+[Unit]
+Description=/etc/rc.local Compatibility
+After=dietpi-service.service
+
+[Service]
+Type=idle
+ExecStart=/etc/rc.local
+StandardOutput=tty
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+_EOF_
 	
+# Disable sysvinit services and enable systemd versions
+on_chroot sh -x - << OROV_END
+
 	# Enable service
 	systemctl enable rc-local.service
 	systemctl daemon-reload
+OROV_END
 
+#Create service to shutdown SSH/Dropbear before reboot
+cat << _EOF_ > /etc/systemd/system/kill-ssh-user-sessions-before-network.service
+[Unit]
+Description=Shutdown all ssh sessions before network
+DefaultDependencies=no
+Before=network.target shutdown.target
 
-	#Create service to shutdown SSH/Dropbear before reboot
-	cat << _EOF_ > /etc/systemd/system/kill-ssh-user-sessions-before-network.service
-	
-	[Unit]
-	Description=Shutdown all ssh sessions before network
-	DefaultDependencies=no
-	Before=network.target shutdown.target
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/killall sshd && /usr/bin/killall dropbear
 
-	[Service]
-	Type=oneshot
-	ExecStart=/usr/bin/killall sshd && /usr/bin/killall dropbear
+[Install]
+WantedBy=poweroff.target halt.target reboot.target
+_EOF_
 
-	[Install]
-	WantedBy=poweroff.target halt.target reboot.target
-	_EOF_
-	
+on_chroot sh -x - << OROV_END	
 	# Enable service
 	systemctl enable kill-ssh-user-sessions-before-network
 	systemctl daemon-reload
@@ -272,6 +279,7 @@ on_chroot sh -e - << OROV_EOF
 	#echo "dpkg reconfig" 
 	#dpkg-reconfigure tzdata
 	#dpkg-reconfigure locales
-OROV_EOF
+OROV_END	
+
 
 echo Finished!

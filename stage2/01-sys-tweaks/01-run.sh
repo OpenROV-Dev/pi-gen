@@ -31,7 +31,7 @@ on_chroot sh -e - <<\EOF
 		groupadd -f -r $GRP
 	done
 	for GRP in adm dialout cdrom audio users sudo video games plugdev input gpio spi i2c netdev; do
-	adduser pi $GRP
+	adduser ${USER_NAME} $GRP
 	done
 EOF
 

@@ -13,3 +13,8 @@
 
 
 # Setup services, if any
+
+on_chroot sh -e - <<EOF
+groupadd -f -r admin
+adduser ${USER_NAME} admin
+EOF

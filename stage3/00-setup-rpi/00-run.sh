@@ -1,12 +1,15 @@
 #!/bin/bash -e
 
-# Setup users and groups
-
-
 # Set up hardware peripherals
 
+# I2C
+# SPI
+# GPIO
 
 # Set up networking
 
+# LAN
+# WIFI
 
-# Setup services
+
+# Setup services, if any

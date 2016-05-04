@@ -15,4 +15,6 @@ on_chroot sh -e - <<EOF
 
 	# Restore apt source list
 	mv /etc/apt/sources.list.bk /etc/apt/source.list
+	
+	apt-get update
 EOF

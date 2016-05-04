@@ -162,26 +162,26 @@ fi
 for i in "$@"
 do
 case $i in
-	# Image name to use
-    -i=*|--imagename=*)      
-    IMAGE_NAME="${i#*=}"
+
+    --imagename=*)      
+    IMG_NAME="${i#*=}"
     shift
     ;;
 
     # Username to use in rootfs
-    -u=*|--username=*)      
+    --username=*)      
     USER_NAME="${i#*=}"
     shift
     ;;
 	
 	# Hostname to use in rootfs
-    -p=*|--password=*)      
+    --password=*)      
     PASS_WORD="${i#*=}"
     shift
     ;;
     
     # Hostname to use in rootfs
-    -h=*|--hostname=*)      
+    --hostname=*)      
     HOST_NAME="${i#*=}"
     shift
     ;;
@@ -194,9 +194,8 @@ done
 
 if [ -z "${IMG_NAME}" ]; 
 then
-	echo "No username specified, defaulting to \"raspbian\""
-	IMAGE_NAME="raspbian"
-	exit 1
+	echo "No image name specified, defaulting to \"raspbian\""
+	IMG_NAME="raspbian"
 fi
 
 if [ -z "$USER_NAME" ]

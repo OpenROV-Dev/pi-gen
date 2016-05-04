@@ -173,6 +173,12 @@ case $i in
     USER_NAME="${i#*=}"
     shift
     ;;
+	
+	# Hostname to use in rootfs
+    -p=*|--password=*)      
+    PASS_WORD="${i#*=}"
+    shift
+    ;;
     
     # Hostname to use in rootfs
     -h=*|--hostname=*)      
@@ -199,6 +205,12 @@ then
   USER_NAME="pi"
 fi
 
+if [ -z "$PASS_WORD" ]
+then
+  echo "No username specified, defaulting to \"raspberry\""
+  PASS_WORD="raspberry"
+fi
+
 if [ -z "$HOST_NAME" ]
 then
   echo "No hostname specified, defaulting to \"raspberrypi\""
@@ -213,6 +225,7 @@ fi
 # Set and export other env variables
 export USER_NAME
 export HOST_NAME
+export PASS_WORD
 export IMG_NAME
 
 export IMG_DATE=${IMG_DATE:-"$(date -u +%Y-%m-%d)"}

@@ -7,9 +7,9 @@ install -v -m 644 files/fstab ${ROOTFS_DIR}/etc/fstab
 
 on_chroot sh -e - <<EOF
 if ! id -u pi >/dev/null 2>&1; then
-	adduser --disabled-password --gecos "" pi
+	adduser --disabled-password --gecos "" ${USER_NAME}
 fi
-echo "pi:raspberry" | chpasswd
+echo "${USER_NAME}:${PASS_WORD}" | chpasswd
 echo "root:root" | chpasswd
 EOF
 

@@ -139,6 +139,8 @@ install_git_repos ()
 
 }
 
+mkdir -p /opt/source
+
 # Install Node Packages
 install_node_pkgs
 

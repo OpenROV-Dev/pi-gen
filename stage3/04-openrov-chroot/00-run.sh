@@ -31,29 +31,29 @@ git_clone_branch
 
 # Move into cockpit directory
 on_chroot sh -e - <<EOF
-	cd ${git_target_chroot_dir}/
-	
-	TERM=dumb npm install --production --unsafe-perm
+cd ${git_target_chroot_dir}/
 
-	wfile="/lib/systemd/system/orov-cockpit.socket"
-	echo "[Socket]" > ${wfile}
-	echo "ListenStream=8080" >> ${wfile}
-	echo "" >> ${wfile}
-	echo "[Install]" >> ${wfile}
-	echo "WantedBy=sockets.target" >> ${wfile}
+TERM=dumb npm install --production --unsafe-perm
 
-	wfile="/lib/systemd/system/orov-cockpit.service"
-	echo "[Unit]" > ${wfile}
-	echo "Description=Cockpit server" >> ${wfile}
-	echo "" >> ${wfile}
-	echo "[Service]" >> ${wfile}
-	echo "NonBlocking=True" >> ${wfile}
-	echo "WorkingDirectory=/opt/openrov/cockpit/src" >> ${wfile}
-	echo "ExecStart=/usr/bin/node cockpit.js" >> ${wfile}
-	echo "SyslogIdentifier=orov-cockpit" >> ${wfile}
+wfile="/lib/systemd/system/orov-cockpit.socket"
+echo "[Socket]" > ${wfile}
+echo "ListenStream=8080" >> ${wfile}
+echo "" >> ${wfile}
+echo "[Install]" >> ${wfile}
+echo "WantedBy=sockets.target" >> ${wfile}
 
-	systemctl enable orov-cockpit.socket || true
-	bash install_lib/openrov-cockpit-afterinstall.sh
+wfile="/lib/systemd/system/orov-cockpit.service"
+echo "[Unit]" > ${wfile}
+echo "Description=Cockpit server" >> ${wfile}
+echo "" >> ${wfile}
+echo "[Service]" >> ${wfile}
+echo "NonBlocking=True" >> ${wfile}
+echo "WorkingDirectory=/opt/openrov/cockpit/src" >> ${wfile}
+echo "ExecStart=/usr/bin/node cockpit.js" >> ${wfile}
+echo "SyslogIdentifier=orov-cockpit" >> ${wfile}
+
+systemctl enable orov-cockpit.socket || true
+bash install_lib/openrov-cockpit-afterinstall.sh
 EOF
 
 git_repo="https://github.com/openrov/openrov-dashboard"
@@ -62,30 +62,30 @@ git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
 git_clone_full
 
 on_chroot sh -e - <<EOF
-	cd ${git_target_chroot_dir}/
-	
-	TERM=dumb npm install --production --unsafe-perm
-	TERM=dumb npm run-script bower
-	
-	wfile="/lib/systemd/system/orov-dashboard.socket"
-	echo "[Socket]" > ${wfile}
-	echo "ListenStream=3080" >> ${wfile}
-	echo "" >> ${wfile}
-	echo "[Install]" >> ${wfile}
-	echo "WantedBy=sockets.target" >> ${wfile}
+cd ${git_target_chroot_dir}/
 
-	wfile="/lib/systemd/system/orov-dashboard.service"
-	echo "[Unit]" > ${wfile}
-	echo "Description=Cockpit server" >> ${wfile}
-	echo "" >> ${wfile}
-	echo "[Service]" >> ${wfile}
-	#http://stackoverflow.com/questions/22498753/no-data-from-socket-activation-with-systemd
-	echo "NonBlocking=True" >> ${wfile}
-	echo "WorkingDirectory=/opt/openrov/dashboard/src" >> ${wfile}
-	echo "ExecStart=/usr/bin/node dashboard.js" >> ${wfile}
-	echo "SyslogIdentifier=orov-dashboard" >> ${wfile}
+TERM=dumb npm install --production --unsafe-perm
+TERM=dumb npm run-script bower
 
-	systemctl enable orov-dashboard.socket || true
+wfile="/lib/systemd/system/orov-dashboard.socket"
+echo "[Socket]" > ${wfile}
+echo "ListenStream=3080" >> ${wfile}
+echo "" >> ${wfile}
+echo "[Install]" >> ${wfile}
+echo "WantedBy=sockets.target" >> ${wfile}
+
+wfile="/lib/systemd/system/orov-dashboard.service"
+echo "[Unit]" > ${wfile}
+echo "Description=Cockpit server" >> ${wfile}
+echo "" >> ${wfile}
+echo "[Service]" >> ${wfile}
+#http://stackoverflow.com/questions/22498753/no-data-from-socket-activation-with-systemd
+echo "NonBlocking=True" >> ${wfile}
+echo "WorkingDirectory=/opt/openrov/dashboard/src" >> ${wfile}
+echo "ExecStart=/usr/bin/node dashboard.js" >> ${wfile}
+echo "SyslogIdentifier=orov-dashboard" >> ${wfile}
+
+systemctl enable orov-dashboard.socket || true
 EOF
 
 git_repo="https://github.com/openrov/openrov-proxy"
@@ -94,24 +94,24 @@ git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
 git_clone_full
 
 on_chroot sh -e - <<EOF
-	cd ${git_target_chroot_dir}/
-	TERM=dumb npm install --production
-	cd proxy-via-browser
-	TERM=dumb npm install --production
-	cd ${git_target_chroot_dir}/
-	ln -s /opt/openrov/openrov-proxy/proxy-via-browser/ /opt/openrov/proxy
-	bash install_lib/openrov-proxy-afterinstall.sh
+cd ${git_target_chroot_dir}/
+TERM=dumb npm install --production
+cd proxy-via-browser
+TERM=dumb npm install --production
+cd ${git_target_chroot_dir}/
+ln -s /opt/openrov/openrov-proxy/proxy-via-browser/ /opt/openrov/proxy
+bash install_lib/openrov-proxy-afterinstall.sh
 EOF
 
 on_chroot sh -e - <<EOF
-wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino/openrov-arduino_1.0.0-1~13_armhf.deb
-dpkg -i openrov-arduino_1.0.0-1~13_armhf.deb
-rm openrov-arduino_1.0.0-1~13_armhf.deb
+wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino/openrov-arduino_1.0.0-1~14_armhf.deb
+dpkg -i openrov-arduino_1.0.0-1~14_armhf.deb
+rm openrov-arduino_1.0.0-1~14_armhf.deb
 
-wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino-builder/openrov-arduino-builder_1.0.0-1~3_armhf.deb
-dpkg -i openrov-arduino-builder_1.0.0-1~3_armhf.deb
+wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino-builder/openrov-arduino-builder_1.0.0-1~4_armhf.deb
+dpkg -i openrov-arduino-builder_1.0.0-1~4_armhf.deb
 
-rm openrov-arduino-builder_1.0.0-1~3_armhf.deb
+rm openrov-arduino-builder_1.0.0-1~4_armhf.deb
 EOF
 
 #echo "Installing wetty"

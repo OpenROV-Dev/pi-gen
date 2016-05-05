@@ -227,11 +227,9 @@ export HOST_NAME
 export PASS_WORD
 export IMG_NAME
 
-export IMG_DATE=${IMG_DATE:-"$(date -u +%Y-%m-%d)"}
-
 export BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SCRIPT_DIR="${BASE_DIR}/scripts"
-export WORK_DIR="${BASE_DIR}/work/${IMG_DATE}-${IMG_NAME}"
+export WORK_DIR="${BASE_DIR}/work/${IMG_NAME}"
 export LOG_FILE="${WORK_DIR}/build.log"
 
 export CLEAN

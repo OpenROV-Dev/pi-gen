@@ -64,7 +64,7 @@ mkdir -p ${buildenv}
 mkdir -p ${buildenv}/images
 
 # Construct image name
-image="${buildenv}/images/${IMAGE_NAME}_${deb_release}_${today}.img"
+image="${buildenv}/images/${IMAGE_NAME}.img"
 
 # Create a blank image file
 dd if=/dev/zero of=${image} bs=1MB count=3800

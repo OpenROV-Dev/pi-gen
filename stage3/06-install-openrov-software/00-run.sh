@@ -25,7 +25,6 @@ mkdir -p ${ROOTFS_DIR}/opt/source
 
 # Fix npm in chroot
 on_chroot sh -e - <<EOF
-
 if [ ! -d /root/.npm ] ; then
 	mkdir -p /root/.npm
 fi
@@ -43,14 +42,14 @@ npm config set user 0
 npm config set userconfig /root/.npmrc
 EOF
 
-
+# Clone Cockpit
 git_repo="https://github.com/openrov/openrov-cockpit"
 git_target_chroot_dir="/opt/openrov/cockpit"
 git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
-git_branch="exp-raspi-cockpit"
+git_branch="feat_platform"
 git_clone_branch
 
-# Move into cockpit directory
+# Install Node modules, and set up services/sockets
 on_chroot sh -e - <<EOF
 cd ${git_target_chroot_dir}/
 
@@ -77,11 +76,13 @@ systemctl enable orov-cockpit.socket || true
 bash install_lib/openrov-cockpit-afterinstall.sh
 EOF
 
+# Clone Dashboard
 git_repo="https://github.com/openrov/openrov-dashboard"
 git_target_chroot_dir="/opt/openrov/dashboard"
 git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
 git_clone_full
 
+# Install Node/Bower modules, and set up services/sockets
 on_chroot sh -e - <<EOF
 cd ${git_target_chroot_dir}/
 
@@ -109,11 +110,13 @@ echo "SyslogIdentifier=orov-dashboard" >> ${wfile}
 systemctl enable orov-dashboard.socket || true
 EOF
 
+# Clone Proxy
 git_repo="https://github.com/openrov/openrov-proxy"
 git_target_chroot_dir="/opt/openrov/openrov-proxy"
 git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
 git_clone_full
 
+# Install Node modules, and run post install script
 on_chroot sh -e - <<EOF
 cd ${git_target_chroot_dir}/
 TERM=dumb npm install --production
@@ -124,6 +127,15 @@ ln -s /opt/openrov/openrov-proxy/proxy-via-browser/ /opt/openrov/proxy
 bash install_lib/openrov-proxy-afterinstall.sh
 EOF
 
+# Clone MCU Firmware
+git_repo="https://github.com/openrov/openrov-software-arduino"
+git_branch="firmware-2.0"
+git_target_chroot_dir="/opt/openrov/firmware"
+git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
+git_clone_branch
+
+# Install the OpenROV Arduino Core and Arduino Builder tools
+# TODO: Actually put these in the repo?
 on_chroot sh -e - <<EOF
 wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino/openrov-arduino_1.0.0-1~14_armhf.deb
 dpkg -i openrov-arduino_1.0.0-1~14_armhf.deb
@@ -135,40 +147,5 @@ dpkg -i openrov-arduino-builder_1.0.0-1~4_armhf.deb
 rm openrov-arduino-builder_1.0.0-1~4_armhf.deb
 EOF
 
-#echo "Installing wetty"
-#TERM=dumb npm install -g wetty --unsafe-perm
+# TODO: Install wetty and cloud9
 
-on_chroot sh -e - <<EOF
-echo "Installing ungit"
-TERM=dumb npm install -g ungit --unsafe-perm
-EOF
-
-on_chroot sh -e - <<EOF
-# Install git repos
-git config --global user.email "openrovuser@example.com"
-git config --global user.name "OpenROV User"
-EOF
-
-# MCU Firmware
-git_repo="https://github.com/openrov/openrov-software-arduino"
-git_branch="firmware-2.0"
-git_target_chroot_dir="/opt/openrov/firmware"
-git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
-git_clone_branch
-
-# Perform Image Customization
-git_repo="https://github.com/openrov/openrov-image-customization"
-git_target_chroot_dir="/opt/openrov/image-customization"
-git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
-git_branch="exp-raspi-image"
-git_clone_branch
-
-on_chroot sh -e - <<EOF
-cd ${git_target_chroot_dir}/
-./afterinstall.sh || true
-EOF
-
-on_chroot sh -e - <<EOF
-git config --global --unset-all user.email
-git config --global --unset-all user.name
-EOF

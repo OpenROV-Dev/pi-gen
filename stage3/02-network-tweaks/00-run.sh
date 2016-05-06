@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 # Enable dhcpd on eth0
-cat > ${ROOTFS_DIR}/etc/dnsmasq.d/eth0_0-dhcp <<__EOF__
+cat <<__EOF__ > ${ROOTFS_DIR}/etc/dnsmasq.d/eth0_0-dhcp 
 interface=eth0:0
 
 #one address range

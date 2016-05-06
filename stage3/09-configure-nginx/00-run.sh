@@ -3,7 +3,7 @@
 cp -a files/default ${ROOTFS_DIR}/etc/nginx/sites-enabled/default
 
 # Setup a service to recreate nginx log folders on tmpfs
-cat > ${ROOTFS_DIR}/etc/init.d/prepare-dirs <<__EOF__
+cat <<__EOF__ > ${ROOTFS_DIR}/etc/init.d/prepare-dirs
 #!/bin/sh
 
 ### BEGIN INIT INFO

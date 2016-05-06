@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-cat > ${ROOTFS_DIR}/etc/issue <<__EOF__
+cat <<__EOF__ > ${ROOTFS_DIR}/etc/issue
   ____                ___  ____ _   __
  / __ \___  ___ ___  / _ \/ __ \ | / /
 / /_/ / _ \/ -_) _ \/ , _/ /_/ / |/ /

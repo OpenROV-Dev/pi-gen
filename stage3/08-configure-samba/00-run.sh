@@ -3,7 +3,7 @@
 # Set up samba configuration
 mkdir -p ${ROOTFS_DIR}/var/run/samba
 
-cat >> ${ROOTFS_DIR}/etc/samba/smb.conf <<__EOF__
+cat <<__EOF__ >> ${ROOTFS_DIR}/etc/samba/smb.conf
 [OpenROV]
 comment = OpenROV Cockpit
 path = /

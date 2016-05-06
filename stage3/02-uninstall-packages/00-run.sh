@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-Update and package list and remove unnecessary packages
+# Update and package list and remove unnecessary packages
 
 on_chroot sh -e - <<EOF
 apt-get purge \

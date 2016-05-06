@@ -42,6 +42,10 @@ npm config set user 0
 npm config set userconfig /root/.npmrc
 EOF
 
+# Install all dependencies
+
+# Geomuxpp
+
 # Clone Cockpit
 git_repo="https://github.com/openrov/openrov-cockpit"
 git_target_chroot_dir="/opt/openrov/cockpit"

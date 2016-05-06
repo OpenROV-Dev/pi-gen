@@ -1,7 +1,7 @@
 work/*
 ./images/*
 .vscode/*
-
+deploy/*
 config
 SKIP
 .pc

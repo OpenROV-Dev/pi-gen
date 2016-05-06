@@ -30,5 +30,6 @@ python-configobj
 python-jinja2
 python-serial
 python-dbus
+wiringpi
 nodejs
 gcc-arm-none-eabi

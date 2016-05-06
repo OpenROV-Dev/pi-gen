@@ -80,6 +80,8 @@ EOF
 		# Run the substages run script
 		if [ -x ${i}-run.sh ]; then
 			log "Begin ${SUB_STAGE_DIR}/${i}-run.sh"
+			# Make sure the script has x permission first
+			chmod +x ./${i}-run.sh
 			./${i}-run.sh
 			log "End ${SUB_STAGE_DIR}/${i}-run.sh"
 		fi
@@ -128,6 +130,8 @@ run_stage(){
 		# Run the pre-run script
 		if [ -x prerun.sh ]; then
 			log "Begin ${STAGE_DIR}/prerun.sh"
+			# Make sure the script has x permission first
+			chmod +x ./prerun.sh
 			./prerun.sh
 			log "End ${STAGE_DIR}/prerun.sh"
 		fi
@@ -204,7 +208,6 @@ if [ -z "${IMG_NAME}" ];
 then
 	echo "No image name specified, defaulting to \"raspbian\""
 	IMG_NAME="raspbian"
-<<<<<<< HEAD
 fi
 
 if [ -z "$USER_NAME" ]
@@ -225,28 +228,6 @@ then
   HOST_NAME="raspberrypi"
 fi
 
-=======
-fi
-
-if [ -z "$USER_NAME" ]
-then
-  echo "No username specified, defaulting to \"pi\""
-  USER_NAME="pi"
-fi
-
-if [ -z "$PASS_WORD" ]
-then
-  echo "No username specified, defaulting to \"raspberry\""
-  PASS_WORD="raspberry"
-fi
-
-if [ -z "$HOST_NAME" ]
-then
-  echo "No hostname specified, defaulting to \"raspberrypi\""
-  HOST_NAME="raspberrypi"
-fi
-
->>>>>>> 2bc5b218c42b4894f40e8a9ec5593a3a23c079fd
 # Source a config file if it exists
 if [ -f config ]; then
 	source config
@@ -261,10 +242,7 @@ export IMG_NAME
 export BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SCRIPT_DIR="${BASE_DIR}/scripts"
 export WORK_DIR="${BASE_DIR}/work/${IMG_NAME}"
-<<<<<<< HEAD
-=======
 export DEPLOY_DIR="${BASE_DIR}/deploy"
->>>>>>> 2bc5b218c42b4894f40e8a9ec5593a3a23c079fd
 export LOG_FILE="${WORK_DIR}/build.log"
 
 export CLEAN

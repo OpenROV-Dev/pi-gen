@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-cp -a files/default ${ROOTFS_DIR}/etc/nginx/sites-enabled/default
+cp --remove-destination -a files/default ${ROOTFS_DIR}/etc/nginx/sites-enabled/default
 
 # Setup a service to recreate nginx log folders on tmpfs
 cat <<__EOF__ > ${ROOTFS_DIR}/etc/init.d/prepare-dirs

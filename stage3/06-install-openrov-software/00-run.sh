@@ -44,8 +44,6 @@ EOF
 
 # Install all dependencies
 
-# Geomuxpp
-
 # Clone Cockpit
 git_repo="https://github.com/openrov/openrov-cockpit"
 git_target_chroot_dir="/opt/openrov/cockpit"
@@ -53,20 +51,22 @@ git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
 git_branch="feat_platform"
 git_clone_branch
 
-# Install Node modules, and set up services/sockets
+# Install cockpit node modules
 on_chroot sh -e - <<EOF
 cd ${git_target_chroot_dir}/
 
 TERM=dumb npm install --production --unsafe-perm
+EOF
 
-wfile="/lib/systemd/system/orov-cockpit.socket"
+# Create cockpit service and socket
+wfile=${ROOTFS_DIR}/lib/systemd/system/orov-cockpit.socket
 echo "[Socket]" > ${wfile}
 echo "ListenStream=8080" >> ${wfile}
 echo "" >> ${wfile}
 echo "[Install]" >> ${wfile}
 echo "WantedBy=sockets.target" >> ${wfile}
 
-wfile="/lib/systemd/system/orov-cockpit.service"
+wfile=${ROOTFS_DIR}/lib/systemd/system/orov-cockpit.service
 echo "[Unit]" > ${wfile}
 echo "Description=Cockpit server" >> ${wfile}
 echo "" >> ${wfile}
@@ -75,6 +75,10 @@ echo "NonBlocking=True" >> ${wfile}
 echo "WorkingDirectory=/opt/openrov/cockpit/src" >> ${wfile}
 echo "ExecStart=/usr/bin/node cockpit.js" >> ${wfile}
 echo "SyslogIdentifier=orov-cockpit" >> ${wfile}
+
+# Enable the cockpit socket and run the after install script
+on_chroot sh -e - <<EOF
+cd ${git_target_chroot_dir}/
 
 systemctl enable orov-cockpit.socket || true
 bash install_lib/openrov-cockpit-afterinstall.sh
@@ -86,31 +90,35 @@ git_target_chroot_dir="/opt/openrov/dashboard"
 git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
 git_clone_full
 
-# Install Node/Bower modules, and set up services/sockets
+# Install Dashboard Node/Bower modules
 on_chroot sh -e - <<EOF
 cd ${git_target_chroot_dir}/
 
 TERM=dumb npm install --production --unsafe-perm
 TERM=dumb npm run-script bower
+EOF
 
-wfile="/lib/systemd/system/orov-dashboard.socket"
+# Create dashboard socket
+wfile=${ROOTFS_DIR}/lib/systemd/system/orov-dashboard.socket
 echo "[Socket]" > ${wfile}
 echo "ListenStream=3080" >> ${wfile}
 echo "" >> ${wfile}
 echo "[Install]" >> ${wfile}
 echo "WantedBy=sockets.target" >> ${wfile}
 
-wfile="/lib/systemd/system/orov-dashboard.service"
+# Create dashboard service
+wfile=${ROOTFS_DIR}/lib/systemd/system/orov-dashboard.service
 echo "[Unit]" > ${wfile}
 echo "Description=Cockpit server" >> ${wfile}
 echo "" >> ${wfile}
 echo "[Service]" >> ${wfile}
-#http://stackoverflow.com/questions/22498753/no-data-from-socket-activation-with-systemd
 echo "NonBlocking=True" >> ${wfile}
 echo "WorkingDirectory=/opt/openrov/dashboard/src" >> ${wfile}
 echo "ExecStart=/usr/bin/node dashboard.js" >> ${wfile}
 echo "SyslogIdentifier=orov-dashboard" >> ${wfile}
 
+# Enable dashboard socket
+on_chroot sh -e - <<EOF
 systemctl enable orov-dashboard.socket || true
 EOF
 
@@ -120,7 +128,7 @@ git_target_chroot_dir="/opt/openrov/openrov-proxy"
 git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
 git_clone_full
 
-# Install Node modules, and run post install script
+# Install proxy node modules, and run post install script
 on_chroot sh -e - <<EOF
 cd ${git_target_chroot_dir}/
 TERM=dumb npm install --production
@@ -141,6 +149,8 @@ git_clone_branch
 # Install the OpenROV Arduino Core and Arduino Builder tools
 # TODO: Actually put these in the repo?
 on_chroot sh -e - <<EOF
+
+# TODO: Install geomuxpp
 
 wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/openocd/openrov-openocd_1.0.0-1~3_armhf.deb
 dpkg -i openrov-openocd_1.0.0-1~3_armhf.deb

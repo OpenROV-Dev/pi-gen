@@ -16,7 +16,7 @@
 USERNAME=pi
 PASSWORD=raspberry
 HOSTNAME=raspberrypi
-IMAGENAME="raspbian-lite-$(date +%Y-%m-%d)"
+IMAGENAME="raspbian-$(date +%Y-%m-%d)"
 
 # Build rootfs
 sudo ./build.sh --username=${USERNAME} --password=${PASSWORD} --hostname=${HOSTNAME} --imagename=${IMAGENAME}

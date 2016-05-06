@@ -141,13 +141,17 @@ git_clone_branch
 # Install the OpenROV Arduino Core and Arduino Builder tools
 # TODO: Actually put these in the repo?
 on_chroot sh -e - <<EOF
+
+wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/openocd/openrov-openocd_1.0.0-1~3_armhf.deb
+dpkg -i openrov-openocd_1.0.0-1~3_armhf.deb
+rm openrov-openocd_1.0.0-1~3_armhf.deb
+
 wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino/openrov-arduino_1.0.0-1~14_armhf.deb
 dpkg -i openrov-arduino_1.0.0-1~14_armhf.deb
 rm openrov-arduino_1.0.0-1~14_armhf.deb
 
 wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino-builder/openrov-arduino-builder_1.0.0-1~4_armhf.deb
 dpkg -i openrov-arduino-builder_1.0.0-1~4_armhf.deb
-
 rm openrov-arduino-builder_1.0.0-1~4_armhf.deb
 EOF
 

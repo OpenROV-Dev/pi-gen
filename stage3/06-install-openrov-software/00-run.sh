@@ -146,6 +146,20 @@ git_target_chroot_dir="/opt/openrov/firmware"
 git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
 git_clone_branch
 
+
+# Clone JSON library
+git_repo="https://github.com/nlohmann/json.git"
+git_branch="develop"
+git_target_dir="${ROOTFS_DIR}/tmp/json"
+git_clone_branch
+
+# Move header file to /usr/include/
+mv ${ROOTFS_DIR}/tmp/json/src/json.hpp ${ROOTFS_DIR}/usr/include/
+
+# Delete git repo
+rm -rf ${ROOTFS_DIR}/tmp/json
+
+
 # Install the OpenROV Arduino Core and Arduino Builder tools
 # TODO: Actually put these in the repo?
 on_chroot sh -e - <<EOF

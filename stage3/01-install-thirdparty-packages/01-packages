@@ -33,3 +33,4 @@ python-dbus
 wiringpi
 nodejs
 gcc-arm-none-eabi
+rpi-update

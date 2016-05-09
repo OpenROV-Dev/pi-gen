@@ -7,9 +7,6 @@ apt-get purge \
 ed \
 lua5.1 \
 luajit \
-python* \
-rsyslog \
-logrotate \
 man-db \
 manpages \
 manpages-dev -y

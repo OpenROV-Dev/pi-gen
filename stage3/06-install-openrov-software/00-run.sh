@@ -43,6 +43,29 @@ npm config set userconfig /root/.npmrc
 EOF
 
 # Install all dependencies
+on_chroot sh -e - <<EOF
+wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/openocd/openrov-openocd_1.0.0-1~3_armhf.deb
+dpkg -i openrov-openocd_1.0.0-1~3_armhf.deb
+rm openrov-openocd_1.0.0-1~3_armhf.deb
+
+wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino/openrov-arduino_1.0.0-1~15_armhf.deb
+dpkg -i openrov-arduino_1.0.0-1~15_armhf.deb
+rm openrov-arduino_1.0.0-1~15_armhf.deb
+
+wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino-builder/openrov-arduino-builder_1.0.0-1~4_armhf.deb
+dpkg -i openrov-arduino-builder_1.0.0-1~4_armhf.deb
+rm openrov-arduino-builder_1.0.0-1~4_armhf.deb
+
+wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/geomuxpp/openrov-geomuxpp_1.0.0-1~4_armhf.deb
+dpkg -i openrov-geomuxpp_1.0.0-1~4_armhf.deb
+rm openrov-geomuxpp_1.0.0-1~4_armhf.deb
+EOF
+
+# Download and install custom UVC kernel module
+on_chroot sh -e - <<EOF
+wget https://s3-us-west-1.amazonaws.com/openrov-rpi-kernel-modules/4.4.9-v7%2B/uvcvideo.ko
+mv uvcvideo.ko /lib/modules/4.4.9-v7+/kernel/drivers/media/usb/uvc/
+EOF
 
 # Clone Cockpit
 git_repo="https://github.com/openrov/openrov-cockpit"
@@ -146,38 +169,6 @@ git_target_chroot_dir="/opt/openrov/firmware"
 git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
 git_clone_branch
 
-
-# Clone JSON library
-git_repo="https://github.com/nlohmann/json.git"
-git_branch="develop"
-git_target_dir="${ROOTFS_DIR}/tmp/json"
-git_clone_branch
-
-# Move header file to /usr/include/
-mv ${ROOTFS_DIR}/tmp/json/src/json.hpp ${ROOTFS_DIR}/usr/include/
-
-# Delete git repo
-rm -rf ${ROOTFS_DIR}/tmp/json
-
-
-# Install the OpenROV Arduino Core and Arduino Builder tools
-# TODO: Actually put these in the repo?
-on_chroot sh -e - <<EOF
-
-# TODO: Install geomuxpp
-
-wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/openocd/openrov-openocd_1.0.0-1~3_armhf.deb
-dpkg -i openrov-openocd_1.0.0-1~3_armhf.deb
-rm openrov-openocd_1.0.0-1~3_armhf.deb
-
-wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino/openrov-arduino_1.0.0-1~15_armhf.deb
-dpkg -i openrov-arduino_1.0.0-1~15_armhf.deb
-rm openrov-arduino_1.0.0-1~15_armhf.deb
-
-wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino-builder/openrov-arduino-builder_1.0.0-1~4_armhf.deb
-dpkg -i openrov-arduino-builder_1.0.0-1~4_armhf.deb
-rm openrov-arduino-builder_1.0.0-1~4_armhf.deb
-EOF
 
 # TODO: Install wetty and cloud9
 

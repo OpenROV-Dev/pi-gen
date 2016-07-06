@@ -247,8 +247,8 @@ cleanup_npm_cache
 install_git_repos ()
 {
 on_chroot sh -e - <<EOF
-git config --global user.email "${rfs_username}@example.com"
-git config --global user.name "${rfs_username}"
+git config --global user.email "${USER_NAME}@example.com"
+git config --global user.name "${USER_NAME}"
 EOF
 
 # MCU Firmware

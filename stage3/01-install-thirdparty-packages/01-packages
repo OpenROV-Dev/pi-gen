@@ -34,3 +34,5 @@ wiringpi
 nodejs
 gcc-arm-none-eabi
 rpi-update
+raspi-config
+device-tree-compiler

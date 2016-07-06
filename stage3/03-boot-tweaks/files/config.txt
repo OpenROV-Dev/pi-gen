@@ -27,10 +27,8 @@ disable_splash=1
 avoid_pwm_pll=0
 
 #-------i2c-------------
+dtparam=i2c=on
 dtparam=i2c_arm=on
-dtparam=i2c1=on
-i2c_arm_baudrate=100000
-dtparam=i2c_vc=on
 
 #-------Overclock-------
 temp_limit=85

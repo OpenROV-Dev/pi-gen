@@ -111,7 +111,7 @@ EOF
 ##############################################################
 # Sysdetect
 ##############################################################
-git_repo="https://github.com/openrov/orov-sysdetect.git"
+git_repo="https://github.com/openrov-dev/orov-sysdetect.git"
 git_branch="master"
 git_target_chroot_dir="/opt/openrov/system"
 git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"

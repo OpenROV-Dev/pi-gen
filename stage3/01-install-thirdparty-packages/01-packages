@@ -25,6 +25,8 @@ bison
 flex
 autoconf
 samba
+ssl-cert
+libavahi-compat-libdnssd-dev
 python-software-properties
 python-configobj
 python-jinja2

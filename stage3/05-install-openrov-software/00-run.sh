@@ -149,7 +149,7 @@ EOF
 git_repo="https://github.com/openrov/openrov-cockpit"
 git_target_chroot_dir="/opt/openrov/cockpit"
 git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
-git_branch="feat_platform"
+git_branch="feat_platabstract"
 git_clone_branch
 
 # Install cockpit node modules

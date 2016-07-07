@@ -177,7 +177,7 @@ echo "WantedBy=multi-user.target" >> ${wfile}
 on_chroot sh -e - <<EOF
 cd ${git_target_chroot_dir}/
 
-systemctl enable orov-cockpit.socket || true
+systemctl enable orov-cockpit.service|| true
 bash install_lib/openrov-cockpit-afterinstall.sh
 EOF
 

@@ -127,6 +127,7 @@ EOF
 wfile=${ROOTFS_DIR}/lib/systemd/system/orov-sysdetect.service
 echo "[Unit]" > ${wfile}
 echo "Description=OpenROV System Detection Process" >> ${wfile}
+echo "Before=orov-cockpit.service" >> ${wfile}
 echo "" >> ${wfile}
 echo "[Service]" >> ${wfile}
 echo "Type=oneshot" >> ${wfile}
@@ -136,8 +137,7 @@ echo "ExecStart=/usr/bin/node src/index.js" >> ${wfile}
 echo "SyslogIdentifier=orov-sysdetect" >> ${wfile}
 echo "" >> ${wfile}
 echo "[Install]" >> ${wfile}
-echo "RequiredBy=orov-cockpit.service" >> ${wfile}
-echo "WantedBy=multi-user.target" >> ${wfile}
+echo "WantedBy=orov-cockpit.service" >> ${wfile}
 
 on_chroot sh -e - <<EOF
 systemctl enable orov-sysdetect.service || true

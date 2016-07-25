@@ -64,8 +64,8 @@ on_chroot sh -e - <<EOF
 	
 	# Geomuxpp App
 	wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/geomuxpp/openrov-geomuxpp_1.0.0-1~13_armhf.deb
-	dpkg -i openrov-geomuxpp_1.0.0-1~13_armhf.deb
-	rm openrov-geomuxpp_1.0.0-1~13_armhf.deb
+	dpkg -i openrov-geomuxpp_1.0.0-1~14_armhf.deb
+	rm openrov-geomuxpp_1.0.0-1~14_armhf.deb
 	
 	# OpenOCD
 	wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/openocd/openrov-openocd_1.0.0-1~3_armhf.deb
@@ -74,8 +74,8 @@ on_chroot sh -e - <<EOF
 	
 	# OpenROV Arduino Core
 	wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino/openrov-arduino_1.0.0-1~16_armhf.deb
-	dpkg -i openrov-arduino_1.0.0-1~16_armhf.deb
-	rm openrov-arduino_1.0.0-1~16_armhf.deb
+	dpkg -i openrov-arduino_1.0.0-1~18_armhf.deb
+	rm openrov-arduino_1.0.0-1~18_armhf.deb
 	
 	# Arduino Builder
 	wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino-builder/openrov-arduino-builder_1.0.0-1~6_armhf.deb
@@ -149,7 +149,7 @@ EOF
 git_repo="https://github.com/openrov/openrov-cockpit"
 git_target_chroot_dir="/opt/openrov/cockpit"
 git_target_dir="${ROOTFS_DIR}${git_target_chroot_dir}"
-git_branch="feat_platabstract"
+git_branch="master"
 git_clone_branch
 
 # Install cockpit node modules

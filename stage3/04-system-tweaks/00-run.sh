@@ -18,4 +18,6 @@ groupadd -f -r admin
 adduser ${USER_NAME} admin
 EOF
 
+# Disable persistent-net-generator rules
+touch ${ROOTFS_DIR}/etc/udev/rules.d/75-persistent-net-generator.rules
 

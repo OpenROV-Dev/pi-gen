@@ -63,7 +63,7 @@ on_chroot sh -e - <<EOF
 	rm openrov-geocamera-utils_1.0.0-1~35.16a26aa_armhf.deb
 	
 	# Geomuxpp App
-	wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/geomuxpp/openrov-geomuxpp_1.0.0-1~13_armhf.deb
+	wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/geomuxpp/openrov-geomuxpp_1.0.0-1~14_armhf.deb
 	dpkg -i openrov-geomuxpp_1.0.0-1~14_armhf.deb
 	rm openrov-geomuxpp_1.0.0-1~14_armhf.deb
 	
@@ -73,9 +73,9 @@ on_chroot sh -e - <<EOF
 	rm openrov-openocd_1.0.0-1~3_armhf.deb
 	
 	# OpenROV Arduino Core
-	wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino/openrov-arduino_1.0.0-1~16_armhf.deb
-	dpkg -i openrov-arduino_1.0.0-1~18_armhf.deb
-	rm openrov-arduino_1.0.0-1~18_armhf.deb
+	wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino/openrov-arduino_1.0.0-1~19_armhf.deb
+	dpkg -i openrov-arduino_1.0.0-1~19_armhf.deb
+	rm openrov-arduino_1.0.0-1~19_armhf.deb
 	
 	# Arduino Builder
 	wget http://openrov-software-nightlies.s3-us-west-2.amazonaws.com/jessie/arduino-builder/openrov-arduino-builder_1.0.0-1~6_armhf.deb
